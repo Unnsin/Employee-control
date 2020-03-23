@@ -16,5 +16,5 @@ npm run start
 ```
 cd backend
 npm install
-npm start
+npm run start
 ```
