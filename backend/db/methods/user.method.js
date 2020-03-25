@@ -1,8 +1,13 @@
 const User = require('../models/User')
 
-const CreateUser = function(userBody) {
+const CreateUser = async function(userBody) {
+    const existUser = await User.findOne({ email: userBody.email })
+    if(existUser) {
+        throw new Error('Duplicate email')
+    }
     const user = new User(userBody);
-    return user.save()
+    await user.save()
+    return user
 }
 
 const GetUser = function(email) {

@@ -4,7 +4,10 @@ import {
     LOGIN_ERROR,
     LOGOUT,
     LOGOUT_SUCCESS,
-    LOGOUT_ERROR
+    LOGOUT_ERROR,
+    SIGNUP,
+    SIGNUP_SUCCESS,
+    SIGNUP_ERROR,
 } from './action'
 
 const initialState = {
@@ -14,31 +17,54 @@ const initialState = {
     error: ''
 }
 
-export default function (state = initialState, action) {
-    switch(action.type) {
+export default function (state = initialState, {type, payload}) {
+    switch(type) {
         case LOGIN: 
             return {
-                ...state
+                ...state,
+                loading: true
             }
         case LOGIN_SUCCESS: 
             return {
-                ...state
+                ...state,
+                login: true,
+                currentUser: payload
             }
         case LOGIN_ERROR:
             return {
-                ...state
+                ...state,
+                error: payload.message
             }
         case LOGOUT:
             return {
-                ...state
+                ...state,
+                loading: true
             }
         case LOGOUT_SUCCESS: 
             return {
-                ...state
+                ...state,
+                login: false
             }
         case LOGOUT_ERROR: 
             return {
-                ...state
+                ...state,
+                error: payload.message
+            }
+        case SIGNUP: 
+            return {
+                ...state,
+                loading: true
+            }
+        case SIGNUP_SUCCESS: 
+            return {
+                ...state,
+                login: true,
+                currentUser: payload
+            }
+        case SIGNUP_ERROR: 
+            return {
+                ...state,
+                error: payload.message
             }
         default:
             return {

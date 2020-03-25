@@ -5,8 +5,8 @@ const CreateEmployee = function(employeeBody) {
     return employee.save()
 }
 
-const EditEmployee = function(editEmployeeBody) {
-    return Employee.findOneAndUpdate({ _id: employee._id }, editEmployeeBody)
+const EditEmployee = function(id, editEmployeeBody) {
+    return Employee.findOneAndUpdate({ _id: id }, editEmployeeBody, { new: true })
 } 
 
 const DeleteEmployee = function(id) {

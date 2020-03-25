@@ -14,7 +14,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/:id', function(req, res, next){
     const id = req.params.id
-    console.log(id)
     employeeMethod.GetEmployeeProfile()
         .then(employee => {
             res.status(200).send(employee)
@@ -26,7 +25,9 @@ router.get('/:id', function(req, res, next){
 
 router.post('/', function(req, res, next){
     const body = req.body
-    employeeMethod.CreateEmployee(body)
+    const created = new Date()
+    console.log('eee')
+    employeeMethod.CreateEmployee({ ...body, created })
         .then(employee => {
             res.status(201).send(employee)
         })

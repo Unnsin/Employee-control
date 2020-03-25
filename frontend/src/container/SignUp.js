@@ -1,117 +1,189 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { signupThunk } from '../redux/Users/thunks'
+import { bindActionCreators } from 'redux';
+import { validateEmail } from '../utils/validate';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
         Employeer Control
-      </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+const styles = (theme) => ({
+    paper: {
+      marginTop: theme.spacing(8),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+      width: '100%',
+      marginTop: theme.spacing(1),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
+})
 
-export default function SignIn() {
-  const classes = useStyles();
+class SignUp extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            password: '',
+            confirmPassword: '',
+            username: '',
+            email: '',
+            confirmError: false,
+            emailError: false,
+        }
+    }
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+    signup = (event) => {
+        event.preventDefault()
+        const confirmationPassword = this.state.password === this.state.confirmPassword
+        if(!confirmationPassword) {
+            this.setState({ confirmError: true })
+            return 
+        }
+        const emailValid = validateEmail(this.state.email)
+        if(!emailValid) {
+            this.setState({ emailError: true })
+            return
+        }
+
+        const signUpBody = {
+            email: this.state.email,
+            password: this.state.password,
+            username: this.state.username
+        }
+
+        this.props.signup(signUpBody)
+    }
+
+    handleChange = (event) => {
+        this.setState({[event.target.name]: event.target.value})
+    }
+
+    render() {
+        const { classes } = this.props
+        const { confirmError, confirmPassword, username, email, password, emailError } = this.state
+
+        return (
+            <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                Sign up
+                </Typography>
+                <form className={classes.form} noValidate onSubmit={this.signup}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    value={username}
+                    onChange={this.handleChange}
+                    autoFocus
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    value={email}
+                    error={emailError}
+                    helperText={emailError ? "Email is not valid" : '' }
+                    onChange={this.handleChange}
+                    autoComplete="email"
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={this.handleChange}
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm password"
+                    type="password"
+                    id="confirmPassword"
+                    helperText={ confirmError ? "Password is not coincides" : "" }
+                    error={confirmError}
+                    value={confirmPassword}
+                    onChange={this.handleChange}
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    Sign Up
+                </Button>
+                <Grid container>
+                    <Grid item xs>
+                    <Link to='/signin' variant="body2">
+                        Back to login
+                    </Link>
+                    </Grid>
+                </Grid>
+                </form>
+            </div>
+            <Box mt={8}>
+                <Copyright />
+            </Box>
+            </Container>
+        );
+    }
 }
+
+const mapStateToProps = state => ({
+
+})
+
+const mapDispatchToProps = dispatch => ({
+    signup: bindActionCreators(signupThunk, dispatch)
+})
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(SignUp))

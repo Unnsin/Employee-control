@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
-import SignUp from './container/SignUp'
+import SignIn from './container/SignIn';
+import SignUp from './container/SignUp';
+import Dashboard from './container/Dashboard';
 
 class GeneralRouter extends Component {
 
   componentDidMount() {
     const token = localStorage.getItem('token')
-    if(!token) {
-      // this.history.push('/login')
+    if(typeof(token) != "undefined") {
+    //   this.props.push('/signin')
     }
   }
 
   render() {
-    const { logined } = this.state
     return (
       <>
         <Switch>
           <Route exact path='/' render={() => (<div>Home page</div>)}/>
-          <Route path='/login' component={SignUp} />
+          <Route path='/dashboard' component={Dashboard} />
+          <Route path='/signin' component={SignIn} />
+          <Route path='/signup' component={SignUp} />
         </Switch>
       </>
     );
   }
 }
 
-const mapStateToProps = state => ({
-
-})
-
 const mapDispachToProps = dispatch => ({
-
+  push: (url) => dispatch(push(url))
 })
 
 
-export default connect(mapStateToProps, mapDispachToProps)(GeneralRouter);
+export default connect(null, mapDispachToProps)(GeneralRouter);

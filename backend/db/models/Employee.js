@@ -1,10 +1,10 @@
 var mongoose = require('mongoose')
 
 const employeeSchema = mongoose.Schema({
-    Name: String,
+    name: String,
     gender: String,
     phone: String,
-    date_added: Date,
+    created: Date,
     salary: Number,
     position: String,
 })

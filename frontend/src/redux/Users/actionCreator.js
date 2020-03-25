@@ -5,6 +5,9 @@ import {
     LOGOUT,
     LOGOUT_SUCCESS,
     LOGOUT_ERROR,
+    SIGNUP,
+    SIGNUP_SUCCESS,
+    SIGNUP_ERROR,
 } from './action'
 
 export const login = (email, password) => {
@@ -55,5 +58,24 @@ export const logout_error = (error) => {
         payload: {
             error
         }
+    }
+}
+
+export const signup = () => {
+    return {
+        type: SIGNUP
+    }
+}
+
+export const signup_success = (user) => {
+    return {
+        type: SIGNUP_SUCCESS,
+        payload: user
+    }
+}
+
+export const signup_error = () => {
+    return {
+        type: SIGNUP_ERROR
     }
 }
