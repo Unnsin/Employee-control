@@ -50,7 +50,6 @@ router.post('/signin', async function(req, res, next){
     const token = await JWT.sign({ email: body.email }, process.env.SECRET_KEY)
     const updateUser = await userMethod.UpdateToken(body.email, token)
     if(updateUser){
-      console.log(updateUser)
       res.status(200).send({
         username: updateUser,
         email: updateUser.email,

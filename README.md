@@ -16,5 +16,6 @@ npm run start
 ```
 cd backend
 npm install
+Create & fill .env file
 npm run start
 ```
