@@ -31,7 +31,14 @@ export const createEmployeeThunks = (employee) => dispatch => {
 
 export const getEmployeeList = () => dispatch => {
     dispatch(get_employee_list())
-    fetch('http://localhost:5000/employee', { method: 'GET' })
+    fetch('http://localhost:5000/employee', { 
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json', 
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    })
         .then(res => res.json())
         .then(res => dispatch(get_employee_list_success(res)))
         .catch(err => dispatch(get_employee_list_error(err)))
@@ -39,7 +46,14 @@ export const getEmployeeList = () => dispatch => {
 
 export const deleteEmployee = (id) => dispatch => {
     dispatch(delete_employee())
-    fetch(`http://localhost:5000/employee/${id}`, { method: 'DELETE' })
+    fetch(`http://localhost:5000/employee/${id}`, { 
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json', 
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    })
         .then(res => {
             if(res.ok){
                 dispatch(delete_employee_success(id));

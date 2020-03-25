@@ -1,6 +1,9 @@
 var express = require('express');
+var ExpressJwt = require('express-jwt');
 var employeeMethod = require('../db/methods/employee.method')
 var router = express.Router();
+
+router.use(ExpressJwt({ secret: process.env.SECRET_KEY }).unless({ path: [ '/users/signup', '/users/signin'] }))
 
 router.get('/', function(req, res, next) {
     employeeMethod.GetEmployeeList()

@@ -13,3 +13,5 @@ export const GET_EMPLOYEE_LIST_ERROR = '[Employee] Get employee list error'
 export const DELETE_EMPLOYEE = '[Employee] Delete employee'
 export const DELETE_EMPLOYEE_SUCCESS = '[Employee] Delete employee success'
 export const DELETE_EMPLOYEE_ERROR = '[Employee] Delete employee error'
+
+export const SEARCH_EMPLOYEE = '[Employee] Search employee'

@@ -10,7 +10,8 @@ import {
     EDIT_EMPLOYEE_ERROR,
     GET_EMPLOYEE_LIST,
     GET_EMPLOYEE_LIST_SUCCESS,
-    GET_EMPLOYEE_LIST_ERROR
+    GET_EMPLOYEE_LIST_ERROR,
+    SEARCH_EMPLOYEE
 } from './action'
 
 export const create_employee = () => ({
@@ -70,4 +71,9 @@ export const get_employee_list_success = (list) => ({
 export const get_employee_list_error = (err) => ({
     type: GET_EMPLOYEE_LIST_ERROR,
     payload: err
+})
+
+export const searchEmployee = (keyword) => ({
+    type: SEARCH_EMPLOYEE,
+    payload: keyword
 })

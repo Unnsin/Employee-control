@@ -13,21 +13,17 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-
-import { getEmployeeList, deleteEmployee } from '../redux/Employee/thunks'
-import NewEmployeeForm from '../component/NewEmployeeForm';
 import { bindActionCreators } from 'redux';
 
+import { getEmployeeList, deleteEmployee } from '../redux/Employee/thunks'
+import { logoutThunk } from '../redux/Users/thunks'
+import NewEmployeeForm from '../component/NewEmployeeForm';
+import { push } from 'connected-react-router';
+import Search from '../component/Serch';
 
-function createData(name, gender, phone, created, salary, position) {
-    return { name, gender, phone, created, salary, position };
-}
-
-const rows = [
-    createData('Lesnoy Vladislav Sergeevich', 'male', '0660001292', '24-10-2020', 1700, 'Developer'),
-];
 
 const styles = {
     table: {
@@ -35,6 +31,10 @@ const styles = {
     },
     button: {
         marginBottom: 20,
+    },
+    logoutButton: {
+        marginTop: 20,
+        marginRight: 20
     }
 }
 
@@ -56,32 +56,59 @@ class Dashboard extends Component {
         this.setState({ showForm: bool })
     }
 
-
     editUserForm = (user) => () => {
         this.setState({editForm: true, editUser: user, showForm: true})
     }
 
+    logout = () => {
+        this.props.logout()
+    }
+
     render() {
-        const { classes, employees } = this.props
+        const { classes, employees, filter, filtredEmployee } = this.props
         const { showForm, editForm, editUser }  = this.state
+
+        const employeeList = filter ? filtredEmployee : employees
 
         return (
             <>
+                <Grid container justify="flex-end">
+                    <Button
+                        variant="contained"
+                        className={classes.logoutButton}
+                        endIcon={<ExitToAppIcon />}
+                        onClick={this.logout}
+                    >
+                        Logout
+                    </Button>
+                </Grid>
                 <Grid container  justify="center" >
                     <h2>Dashboard</h2>
                 </Grid>
                 <Grid container>
                     <Grid item xs={2}/>
                     <Grid item xs={8}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        endIcon={<AddCircleOutlineIcon />}
-                        onClick={this.showForm(true)}
+                    <Grid 
+                        container  
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
                     >
-                        New employee
-                    </Button>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                endIcon={<AddCircleOutlineIcon />}
+                                onClick={this.showForm(true)}
+                            >
+                                New employee
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Search />
+                        </Grid>
+                    </Grid>
                     <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="simple table">
                             <TableHead>
@@ -97,7 +124,7 @@ class Dashboard extends Component {
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {employees.map(row => (
+                            {employeeList.map(row => (
                                 <TableRow key={row._id}>
                                 <TableCell component="th" scope="row">
                                     {row.name}
@@ -142,12 +169,16 @@ class Dashboard extends Component {
 }
 
 const mapStateToDispatch = state => ({
-    employees: state.employees.employees
+    employees: state.employees.employees,
+    filtredEmployee: state.employees.filtredEmployee,
+    filter: state.employees.filter
 })
 
 const mapDispatchToProps = dispatch => ({
     getEmployeeList: bindActionCreators(getEmployeeList, dispatch),
-    deleteEmployee: bindActionCreators(deleteEmployee, dispatch)
+    deleteEmployee: bindActionCreators(deleteEmployee, dispatch),
+    logout: bindActionCreators(logoutThunk, dispatch),
+    push: bindActionCreators(push, dispatch)
 })
 
 export default withStyles(styles)(connect(mapStateToDispatch, mapDispatchToProps)(Dashboard))

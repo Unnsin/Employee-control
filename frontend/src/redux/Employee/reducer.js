@@ -11,11 +11,13 @@ import {
     EDIT_EMPLOYEE,
     EDIT_EMPLOYEE_SUCCESS,
     EDIT_EMPLOYEE_ERROR,
+    SEARCH_EMPLOYEE
 } from './action'
 
 const initialState = {
     employees: [],
     loading: false,
+    keyword: '',
     error: ''
 }
 
@@ -85,13 +87,20 @@ export default function(state = initialState, { type, payload }) {
                 loading: false,
             }
         }
-            
         case EDIT_EMPLOYEE_ERROR: 
             return {
                 ...state,
                 error: payload,
                 loading: false,
             }
+        case SEARCH_EMPLOYEE: {
+            const reg = new RegExp(payload.toLowerCase(), 'ig')
+            return {
+                ...state,
+                filtredEmployee: state.employees.filter(item => item.name.toLowerCase().match(reg)),
+                filter: payload === '' ? false : true
+            }
+        }
         default: 
             return {
                 ...state
